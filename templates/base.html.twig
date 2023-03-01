@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+            <link href="//cdn-images.mailchimp.com/embedcode/classic-071822.css" rel="stylesheet" type="text/css">
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        {% block menu %}
+			{% include "components/navbar.html.twig" %}
+		{% endblock %}
+
+        {% for message in app.flashes('Succès') %}
+            <div class="alert alert-success"><strong>Succès ! </strong>{{ message }}</div>
+        {% endfor %}
+
+		{% for message in app.flashes('Erreur') %}
+            <div class="alert alert-danger"><strong>Erreur ! </strong>{{message}}</div>
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+
+        {% block footer %}
+			{% include "components/footer.html.twig" %}
+		{% endblock %}
+        
+        {% block javascripts %}
+            <script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+            <script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';fnames[6]='MMERGE6';ftypes[6]='text';fnames[7]='MMERGE7';ftypes[7]='text';fnames[8]='MMERGE8';ftypes[8]='text';fnames[9]='MMERGE9';ftypes[9]='url';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
+</html>
