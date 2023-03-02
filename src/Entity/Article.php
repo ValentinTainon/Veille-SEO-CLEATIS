@@ -15,7 +15,7 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateCreation = null;
+    private ?\DateTimeInterface $datePublication = null;
 
     #[ORM\Column(length: 255)]
     private ?string $source = null;
@@ -34,14 +34,14 @@ class Article
         return $this->id;
     }
 
-    public function getDateCreation(): ?\DateTimeInterface
+    public function getDatePublication(): ?\DateTimeInterface
     {
-        return $this->dateCreation;
+        return $this->datePublication;
     }
 
-    public function setDateCreation(\DateTimeInterface $dateCreation): self
+    public function setDatePublication(\DateTimeInterface $datePublication): self
     {
-        $this->dateCreation = $dateCreation;
+        $this->datePublication = $datePublication;
 
         return $this;
     }

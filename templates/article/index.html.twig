@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>DateCreation</th>
+                <th>datePublication</th>
                 <th>Titre</th>
                 <th>Description</th>
                 <th>actions</th>
@@ -19,7 +19,7 @@
         {% for article in articles %}
             <tr>
                 <td>{{ article.id }}</td>
-                <td>{{ article.dateCreation ? article.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ article.datePublication ? article.datePublication|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ article.titre }}</td>
                 <td>{{ article.description }}</td>
                 <td>

@@ -6,10 +6,10 @@
     <div class="detail-article-container">
         <div class="detail-article-content">
             <a href="#">Fil d'ariane</a>
-            <p>{{ article.dateCreation ? article.dateCreation|date('d-m-Y H:i:s') : '' }}</p>
+            <p>{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
             <p>{{ article.source }}</p>
             <p>{{ article.titre }}</p>
-            <p>{{ article.description }}</p>
+            <p>{{ article.description|raw }}</p>
         </div>
         <section id="evenement">
             <div class="evenement-container">
