@@ -6,10 +6,11 @@
     <div class="detail-article-container">
         <div class="detail-article-content">
             <a href="#">Fil d'ariane</a>
-            <p>{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
-            <p>{{ article.source }}</p>
-            <p>{{ article.titre }}</p>
+            <p class="date-article">{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
+            <a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }}</a>
+            <h2>{{ article.titre }}</h2>
             <p>{{ article.description|raw }}</p>
+            <p>Lire l'article : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
         </div>
         <section id="evenement">
             <div class="evenement-container">

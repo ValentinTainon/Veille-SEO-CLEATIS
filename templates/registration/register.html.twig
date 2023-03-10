@@ -15,6 +15,7 @@
             {{ form_row(registrationForm.email) }}
             {{ form_row(registrationForm.plainPassword) }}
             <button type="submit" class="btn">Créer un compte</button>
+            <p class="alternative">Vous avez déjà un compte ? <a href="{{path('app_login')}}">Connexion</a></p>
         {{ form_end(registrationForm) }}
     </div>
 {% endblock %}

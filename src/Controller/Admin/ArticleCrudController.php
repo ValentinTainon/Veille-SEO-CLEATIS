@@ -3,10 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class ArticleCrudController extends AbstractCrudController
 {
@@ -15,15 +17,21 @@ class ArticleCrudController extends AbstractCrudController
         return Article::class;
     }
 
-    
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
+    }
+
     public function configureFields(string $pageName): iterable
     {
-        return [
-            DateTimeField::new('datePublication'),
-            TextField::new('source'),
-            TextField::new('titre'),
-            TextEditorField::new('description'),
-        ];
+        yield DateTimeField::new('datePublication')
+            ->setFormTypeOption('disabled', 'disabled');
+        yield TextField::new('nomSource');
+        yield TextField::new('lienSource');
+        yield TextField::new('titre');
+        yield TextareaField::new('description')
+            ->setFormType(CKEditorType::class);
+        yield TextField::new('lienArticle');
     }
-    
 }

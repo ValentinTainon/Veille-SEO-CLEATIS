@@ -18,13 +18,19 @@ class Article
     private ?\DateTimeInterface $datePublication = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $source = null;
+    private ?string $nomSource = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lienSource = null;
 
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lienArticle = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     private ?User $user = null;
@@ -46,14 +52,26 @@ class Article
         return $this;
     }
 
-    public function getSource(): ?string
+    public function getNomSource(): ?string
     {
-        return $this->source;
+        return $this->nomSource;
     }
 
-    public function setSource(string $source): self
+    public function setNomSource(string $nomSource): self
     {
-        $this->source = $source;
+        $this->nomSource = $nomSource;
+
+        return $this;
+    }
+
+    public function getLienSource(): ?string
+    {
+        return $this->lienSource;
+    }
+
+    public function setLienSource(string $lienSource): self
+    {
+        $this->lienSource = $lienSource;
 
         return $this;
     }
@@ -78,6 +96,18 @@ class Article
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getLienArticle(): ?string
+    {
+        return $this->lienArticle;
+    }
+
+    public function setLienArticle(string $lienArticle): self
+    {
+        $this->lienArticle = $lienArticle;
 
         return $this;
     }

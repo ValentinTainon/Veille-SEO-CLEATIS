@@ -1,110 +1,94 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Veille SEO Cleatis{% endblock %}
+{% block title %}Veille SEO Cleatis
+{% endblock %}
 
 {% block body %}
 	<div class="home-container">
 		<header>
-            <div class="left">
-                <div class="presentation">
-                    <h1>Veille et actualités du référencement SEO Cleatis</h1>
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-                </div>
-                <div class="newsletter">
-                    <h2>Newsletter Cleatis</h2>
-                    <p>Reçois par e-mail les meilleures actualités de Cleatis !</p>
-                    <!-- Begin Mailchimp Signup Form -->
-                    <div id="mc_embed_signup">
-                        <form action="https://cleatis.us7.list-manage.com/subscribe/post?u=2dcb41c1e4b58e0b7d32a9897&amp;id=68cead903e&amp;f_id=0065dae4f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                            <div id="mc_embed_signup_scroll">
-                            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-                            <div class="mc-field-group">
-                                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span></label>
-                                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" required>
-                                <span id="mce-EMAIL-HELPERTEXT" class="helper_text">monemail@email.fr</span>
-                            </div>
-                            <div id="mce-responses" class="clear foot">
-                                <div class="response" id="mce-error-response" style="display:none"></div>
-                                <div class="response" id="mce-success-response" style="display:none"></div>
-                            </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_2dcb41c1e4b58e0b7d32a9897_68cead903e" tabindex="-1" value=""></div>
-                                <div class="optionalParent">
-                                    <div class="clear foot">
-                                        <input type="submit" value="S'inscrire" name="subscribe" id="mc-embedded-subscribe" class="button">
-                                        <p class="brandingLogo"><a href="http://eepurl.com/ildaB5" title="Mailchimp - email marketing made easy and fun"><img src="https://eep.io/mc-cdn-images/template_images/branding_logo_text_dark_dtp.svg"></a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!--End mc_embed_signup-->
-                </div>
-            </div>
-            <div class="right">
-                <div class="powered-by">
-                    <h2>Powered by</h2>
-                    <a href="https://www.cleatis.eu/" target="_blank"><img class="logo" src="{{ asset('images/logo-cleatis.webp') }}" alt="Logo Cléatis"></a>
-                </div>
-            </div>
+			<div class="left">
+				<div class="presentation">
+					<h1>Veille et actualités du référencement SEO Cleatis</h1>
+				</div>
+				<div class="newsletter">
+					<h2>Newsletter Cleatis</h2>
+					<p>Reçois par e-mail les meilleures actualités de Cleatis !</p>
+					<!-- Begin Mailchimp Signup Form -->
+					<div id="mc_embed_signup">
+						<form action="https://cleatis.us7.list-manage.com/subscribe/post?u=2dcb41c1e4b58e0b7d32a9897&amp;id=68cead903e&amp;f_id=0065dae4f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+							<div id="mc_embed_signup_scroll">
+								<div class="indicates-required">
+									<span class="asterisk">*</span>
+									indicates required</div>
+								<div class="mc-field-group">
+									<label for="mce-EMAIL">Email Address
+										<span class="asterisk">*</span>
+									</label>
+									<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" required>
+									<span id="mce-EMAIL-HELPERTEXT" class="helper_text">monemail@email.fr</span>
+								</div>
+								<div id="mce-responses" class="clear foot">
+									<div class="response" id="mce-error-response" style="display:none"></div>
+									<div class="response" id="mce-success-response" style="display:none"></div>
+								</div>
+								<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+								<div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_2dcb41c1e4b58e0b7d32a9897_68cead903e" tabindex="-1" value=""></div>
+								<div class="optionalParent">
+									<div class="clear foot">
+										<input type="submit" value="S'inscrire" name="subscribe" id="mc-embedded-subscribe" class="button">
+										<p class="brandingLogo">
+											<a href="http://eepurl.com/ildaB5" title="Mailchimp - email marketing made easy and fun"><img src="https://eep.io/mc-cdn-images/template_images/branding_logo_text_dark_dtp.svg"></a>
+										</p>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!--End mc_embed_signup-->
+				</div>
+			</div>
+			<div class="right">
+				<div class="powered-by">
+					<h2>Powered by</h2>
+					<a href="https://www.cleatis.eu/" target="_blank"><img class="logo" src="{{ asset('images/logo-cleatis.webp') }}" alt="Logo Cléatis"></a>
+				</div>
+			</div>
 		</header>
 
-        <section id="fil-actu">
-            <div class="fil-actu-container">
-                <div class="fil-actu-content">
-                    <h2>Fil D'actualités</h2>
-                    {% for item in rss %}
-                        <div class="article">
-                            {{ item.item.pubDate ? item.item.pubDate|date('d-m-Y H:i:s') : '' }}
-                            <a class="source" href="{{ item.link }}" target="_blank"><h3>{{ item.title }}</h3></a>
-                            <a class="titre-article" href="{{ item.item.link }}" target="_blank"><h3>{{ item.item.title }}</h3></a>
-                        </div>
-                    {% endfor %}
-                    {% for item in child %}
-                        <div class="article">
-                            {{ item.item.pubDate ? item.item.pubDate|date('d-m-Y H:i:s') : '' }}
-                            <a class="source" href="{{ item.link }}" target="_blank"><h3>{{ item.title }}</h3></a>
-                            <a class="titre-article" href="{{ item.item.link }}" target="_blank"><h3>{{ item.item.title }}</h3></a>
-                        </div>    
-                    {% endfor %}
-                    {% for item in rssAbondance %}
-                        <div class="article">
-                            {{ item.item.pubDate ? item.item.pubDate|date('d-m-Y H:i:s') : '' }}
-                            <a class="source" href="{{ item.link }}" target="_blank"><h3>{{ item.title }}</h3></a>
-                            <a class="titre-article" href="{{ item.item.link }}" target="_blank"><h3>{{ item.item.title }}</h3></a>
-                        </div>    
-                    {% endfor %}
-                    {% for item in rssNeper %}
-                        <div class="article">
-                            {{ item.item.pubDate ? item.item.pubDate|date('d-m-Y H:i:s') : '' }}
-                            <a class="source" href="{{ item.link }}" target="_blank"><h3>{{ item.title }}</h3></a>
-                            <a class="titre-article" href="{{ item.item.link }}" target="_blank"><h3>{{ item.item.title }}</h3></a>
-                        </div>    
-                    {% endfor %}
-                    {% for article in articles %}
-                        <div class="article">
-                            {{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}
-                            <p>{{ article.source }}</p>
-                            <a class="titre-article" href="{{ path('app_article_show', {'id': article.id}) }}"><h3>{{ article.titre }}</h3></a>
-                        </div>
-                    {% else %}
-                        <p>Pas d'articles</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
+		<section id="fil-actu">
+			<div class="fil-actu-container">
+				<div class="fil-actu-content">
+					<h2>Fil D'actualités</h2>
+					{% for article in pagination %}
+						<div class="article">
+							<p class="date-article">{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
+							<a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }}</a>
+							<a class="titre-article" href="{{ path('app_article_show', {'id': article.id}) }}">
+								<h3>{{ article.titre }}</h3>
+							</a>
+						</div>
+					{% else %}
+						<p>Pas d'articles</p>
+					{% endfor %}
+					<div class="navigation">
+						{{ knp_pagination_render(pagination) }}
+					</div>
+				</div>
+			</div>
+		</section>
 
-        <section id="evenement">
-            <div class="evenement-container">
-                <div class="evenement-content">
-                    <h2>Derniers événements</h2>
-                    <div class="media">
-                        <iframe src="https://www.youtube.com/embed/_MaFgpyXzkc" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                        <iframe src="https://www.youtube.com/embed/KArixiYHi04" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                        <iframe src="https://www.youtube.com/embed/QTYPyUUgjPg" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                    <a href="https://www.youtube.com/@cleatis" class="media-btn" target="_blank">Plus de vidéos</a>
-                </div>
-            </div>
-        </section>
+		<section id="evenement">
+			<div class="evenement-container">
+				<div class="evenement-content">
+					<h2>Derniers événements</h2>
+					<div class="media">
+						<iframe src="https://www.youtube.com/embed/_MaFgpyXzkc" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+						<iframe src="https://www.youtube.com/embed/KArixiYHi04" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+						<iframe src="https://www.youtube.com/embed/QTYPyUUgjPg" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+					</div>
+					<a href="https://www.youtube.com/@cleatis" class="media-btn" target="_blank">Plus de vidéos</a>
+				</div>
+			</div>
+		</section>
 	</div>
 {% endblock %}

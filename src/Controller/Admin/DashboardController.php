@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
+use App\Entity\FluxRss;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -15,12 +17,11 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_home');
-        }
-
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
-        $url = $routeBuilder->setController(ArticleCrudController::class)->generateUrl();
+        if ($this->isGranted('ROLE_REDACTEUR'))
+            $url = $routeBuilder->setController(ArticleCrudController::class)->generateUrl();
+        if ($this->isGranted('ROLE_ADMIN'))
+            $url = $routeBuilder->setController(UserCrudController::class)->generateUrl();
 
         return $this->redirect($url);
 
@@ -50,6 +51,13 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoRoute('Retour sur le site', 'fas fa-home', 'app_home');
-        yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)
+                ->setPermission('ROLE_ADMIN');
+            yield MenuItem::linkToCrud('Flux RSS', 'fas fa-rss', FluxRss::class)
+                ->setPermission('ROLE_ADMIN');
+        }
+        if ($this->isGranted('ROLE_REDACTEUR'))
+            yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class);
     }
 }
