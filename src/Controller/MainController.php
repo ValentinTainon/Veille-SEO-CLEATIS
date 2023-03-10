@@ -79,12 +79,4 @@ class MainController extends AbstractController
             'article' => $article,
         ]);
     }
-
-    #[Route('/auteurs', name: 'app_auteurs')]
-    public function auteurs(): Response
-    {
-        return $this->render('main/auteurs.html.twig', [
-            'controller_name' => 'MainController',
-        ]);
-    }
 }

@@ -10,13 +10,32 @@ body {
     background-color: white;
 }
 
+/* COOKIES */
+.cookie-title{
+    padding-bottom: 5px;
+}
+
+.ch-cookie-consent__read-more{
+    display: none!important;
+}
+
+.cookie-infos{
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.cookie-infos:hover{
+    text-decoration: underline;
+}
+
 /* NAVBAR / FOOTER */
 nav,
 footer {
     width: 100vw;
     font-size: 16px;
-    color: white;
-    background-color: #274060;
+    color: black;
+    background-color: #faf3f7;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -39,7 +58,7 @@ footer {
 }
 
 .nav-lien {
-    color: white;
+    color: black;
     text-decoration: none;
     padding: 10px 15px;
     border-radius: 30px;
@@ -47,12 +66,12 @@ footer {
 }
 
 .nav-lien:hover {
-    color: black;
-    background-color: white;
+    color: white;
+    background-color: black;
 }
 
 footer a{
-    color: white;
+    color: black;
 }
 
 ul {
@@ -127,11 +146,12 @@ header {
 .presentation {
     width: 100%;
     height: 200px;
-    color: white;
-    background-color: #5fb0fc;
+    color: black;
+    background-color: #faf3f7;
     padding: 10px;
     border-radius: 10px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -147,8 +167,8 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
-    background-color: #5fb0fc;
+    color: black;
+    background-color: #faf3f7;
     border-radius: 10px;
 }
 
@@ -225,7 +245,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #335C81;
+    background-color: #faf3f7;
 }
 
 .evenement-content{
@@ -235,7 +255,7 @@ header {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    color: #fff;
+    color: black;
 }
 
 .media{
@@ -252,14 +272,14 @@ iframe{
 
 .media-btn{
     padding: 15px 75px;
-    color: #fff;
-    border: 3px solid #fff;
+    color: black;
+    border: 3px solid black;
     border-radius: 30px;
     transition: 0.5s;
 }
 
 .media-btn:hover{
-    background-color: #274060;
+    background-color: #f8e6f0;
 }
 
 /* PAGE DETAILS ARTICLE */
@@ -277,4 +297,11 @@ iframe{
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+}
+
+/* AUTEURS */
+.auteurs-container{
+    width: 100vw;
+    height: 100vh;
+    padding-top: 15vh;
 }
