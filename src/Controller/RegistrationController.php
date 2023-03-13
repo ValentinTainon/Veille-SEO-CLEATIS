@@ -55,7 +55,8 @@ class RegistrationController extends AbstractController
                         ->subject('Veuillez confirmer votre e-mail')
                         ->htmlTemplate('registration/confirmation_email.html.twig')
                 );
-                $this->addFlash('Succès', 'Veuillez confimer votre adresse e-mail.');
+
+                $this->addFlash('Succès', 'Votre compte a été créé, veuillez confirmer votre adresse e-mail.');
 
                 return $this->redirectToRoute('app_login');
             }
@@ -78,7 +79,8 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_register');
         }
-        $this->addFlash('success', 'Votre adresse e-mail a bien été vérifiée.');
+
+        $this->addFlash('Succès', 'Votre adresse e-mail a été vérifiée.');
 
         return $this->redirectToRoute('admin');
     }
