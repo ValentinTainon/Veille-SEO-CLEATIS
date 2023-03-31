@@ -3,27 +3,25 @@
 {% block title %}{{ article.titre }}{% endblock %}
 
 {% block body %}
-    <div class="detail-article-container">
-        <div class="detail-article-content">
-            <a href="#">Fil d'ariane</a>
-            <p class="date-article">{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
-            <a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }}</a>
-            <h2>{{ article.titre }}</h2>
-            <p>{{ article.description|raw }}</p>
-            <p>Lire l'article : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
-        </div>
-        <section id="evenement">
-            <div class="evenement-container">
-                <div class="evenement-content">
-                    <h2>Derniers événements</h2>
-                    <div class="media">
-                        <iframe src="https://www.youtube.com/embed/_MaFgpyXzkc" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                        <iframe src="https://www.youtube.com/embed/KArixiYHi04" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                        <iframe src="https://www.youtube.com/embed/QTYPyUUgjPg" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                    <a href="https://www.youtube.com/@cleatis" class="media-btn" target="_blank">Plus de vidéos</a>
-                </div>
-            </div>
-        </section>
-    </div>
+	<div class="detail-article-container">
+		<div class="detail-article-content">
+			<a href="#">Fil d'ariane</a>
+			<p class="date-article">{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
+			<a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }}</a>
+			<h2>{{ article.titre }}</h2>
+			{{ article.description|split('</figure>')|first|u.truncate(4500, '...', false)|raw }}
+			<p>Lire l'article : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
+		</div>
+        {# Derniers articles #}
+		<div class="derniers-articles">
+            <h2>Derniers Articles</h2>
+			{% for dernierArticle in derniersArticles %}
+					<a class="titre-article" href="{{ path('app_article_show', {'id': dernierArticle.id}) }}">
+						<p>{{ dernierArticle.titre }}</p>
+					</a>
+			{% else %}
+				<p>Pas d'articles</p>
+			{% endfor %}
+		</div>
+	</div>
 {% endblock %}
