@@ -1,7 +1,18 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        # a hasher used in the past for some users
+        legacy:
+            algorithm: sha1
+            encode_as_base64: false
+            iterations: 1
+
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            # the new hasher, along with its options
+            algorithm: auto
+            migrate_from:
+                - legacy # uses the "legacy" hasher configured above
+
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
@@ -9,6 +20,7 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
+                
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -17,15 +29,13 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
-                # "app_login" is the name of the route created previously
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                default_target_path: admin
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
-
+                target: app_login
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -35,15 +45,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_REDACTEUR] }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, allow_if: "(is_granted('ROLE_ADMIN') or is_granted('ROLE_REDACTEUR')) and user.isVerified() == true" }
 
-    # La partie role_hierarchy contient la hiérarchie des rôles
-    # Un rédacteur sera également utilisateur
-    # Un administrateur sera également rédacteur et donc utilisateur
     role_hierarchy:
-        ROLE_REDACTEUR: ROLE_USER
-        ROLE_ADMIN: ROLE_REDACTEUR
+        ROLE_ADMIN: ROLE_REDACTEUR # Un administrateur sera également rédacteur
 
 when@test:
     security:

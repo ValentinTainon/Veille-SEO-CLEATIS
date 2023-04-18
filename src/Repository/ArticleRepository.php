@@ -38,21 +38,26 @@ class ArticleRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-    public function paginationQuery()
+    
+    public function articlePrecedentQuery(Article $article)
     {
         return $this->createQueryBuilder('a')
-            ->orderBy('a.datePublication', 'DESC')
-            ->getQuery();
+        ->where('a.datePublication < :datePublication')
+        ->orderBy('a.datePublication', 'DESC')
+        ->setParameter('datePublication', $article->getDatePublication())
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
     }
 
-    //    public function findOneBySomeField($value): ?Article
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function articleSuivantQuery(Article $article)
+    {
+        return $this->createQueryBuilder('a')
+        ->where('a.datePublication > :datePublication')
+        ->orderBy('a.datePublication', 'ASC')
+        ->setParameter('datePublication', $article->getDatePublication())
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+    }
 }

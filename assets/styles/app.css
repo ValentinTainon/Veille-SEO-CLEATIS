@@ -33,23 +33,22 @@ body {
 nav,
 footer {
     width: 100vw;
+    height: 10vh;
     font-size: 16px;
     color: black;
-    background-color: transparent;
+    background-color: #faf3f7;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
 nav {
-    height: 15vh;
     top: 0;
     position: fixed;
     z-index: 2;
 }
 
 footer {
-    height: 15vh;
     bottom: 0;
 }
 
@@ -93,6 +92,7 @@ button{
     text-align: center;
     top: 0;
     left: 0;
+    z-index: 99999;
 }
 
 .alert-success{
@@ -119,7 +119,7 @@ button{
 }
 
 /* PAGE PRINCIPALE */
-.home-container {
+.homepage-container {
     width: 100vw;
     height: fit-content;
     display: flex;

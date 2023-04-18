@@ -1,10 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Veille SEO Cleatis
-{% endblock %}
-
 {% block body %}
-	<div class="home-container">
+	<div class="homepage-container">
 		<header>
 			<div class="left">
 				<div class="presentation">
@@ -51,26 +48,26 @@
 			</div>
 		</header>
 		{# Fil d'actualités #}
-		<section id="fil-actu">
+		<section id="fil-actualites">
 			<div class="fil-actu-container">
 				<div class="fil-actu-content">
 					<h2>Fil D'actualités</h2>
-					{% for article in pagination %}
+					{% for article in articles %}
 						<div class="article">
-							<p class="date-article">{{ article.datePublication|date('d-m-Y H:i:s') }}</p>
+							<p class="date-article">Le {{ article.datePublication|date('d/m/Y à H:i:s') }}</p>
 							<a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }}</a>
-							<a class="titre-article" href="{{ path('app_article_show', {'id': article.id}) }}">
-								<h3>{{ article.titre }}</h3>
-							</a>
+							<a class="titre-article" href="{{ path('app_article_show', {'slug': article.slug}) }}"><h3>{{ article.titre }}</h3></a>
 						</div>
 					{% else %}
 						<p>Pas d'articles</p>
 					{% endfor %}
 					<div class="navigation">
-						{{ knp_pagination_render(pagination) }}
+						{{ knp_pagination_render(articles) }}
 					</div>
 				</div>
 			</div>
 		</section>
+		{# Dernières vidéos Youtube #}
+        {% include "components/youtubeVideos.html.twig" %}
 	</div>
 {% endblock %}

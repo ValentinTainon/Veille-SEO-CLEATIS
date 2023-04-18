@@ -19,19 +19,18 @@ class ArticleCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return $crud
-            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
+        return $crud->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
     }
 
     public function configureFields(string $pageName): iterable
     {
-        yield DateTimeField::new('datePublication')
-            ->setFormTypeOption('disabled', 'disabled');
-        yield TextField::new('nomSource');
-        yield TextField::new('lienSource');
-        yield TextField::new('titre');
-        yield TextareaField::new('description')
-            ->setFormType(CKEditorType::class);
-        yield TextField::new('lienArticle');
+        return [
+            DateTimeField::new('datePublication')->setFormTypeOption('disabled', 'disabled'),
+            TextField::new('nomSource'),
+            TextField::new('lienSource'),
+            TextField::new('titre'),
+            TextareaField::new('description')->setFormType(CKEditorType::class),
+            TextField::new('lienArticle')->setLabel('Lien Article Complet')
+        ];
     }
 }

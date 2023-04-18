@@ -5,23 +5,34 @@
 {% block body %}
 	<div class="detail-article-container">
 		<div class="detail-article-content">
-			<a href="#">Fil d'ariane</a>
-			<p class="date-article">{{ article.datePublication ? article.datePublication|date('d-m-Y H:i:s') : '' }}</p>
-			<a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }}</a>
+			<span>
+				<a href="/#fil-actualites">Fil d'actualités / </a><a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }} / </a><a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a>
+			</span>
+			<p class="date-article">Publié le {{ article.datePublication|date('d/m/Y à H:i:s') }}</p>
 			<h2>{{ article.titre }}</h2>
-			{{ article.description|split('</figure>')|first|u.truncate(4500, '...', false)|raw }}
-			<p>Lire l'article : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
+			{{ article.description|split('</figure>')|first|u.truncate(5000, '...', false)|raw }}
+			<p>Lire l'article complet : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
+			<div class="nav-article">
+				{% if articleSuivant is not null %}
+					<a href="{{ path('app_article_show', { 'slug': articleSuivant.slug }) }}"><i class="fa-solid fa-arrow-left"></i> Article suivant</a>
+				{% endif %}
+				{% if articlePrecedent is not null %}
+					<a href="{{ path('app_article_show', { 'slug': articlePrecedent.slug }) }}">Article précédent <i class="fa-solid fa-arrow-right"></i></a>
+				{% endif %}
+			</div>
 		</div>
-        {# Derniers articles #}
+		{# Derniers articles #}
 		<div class="derniers-articles">
-            <h2>Derniers Articles</h2>
+			<h2>Derniers Articles</h2>
 			{% for dernierArticle in derniersArticles %}
-					<a class="titre-article" href="{{ path('app_article_show', {'id': dernierArticle.id}) }}">
-						<p>{{ dernierArticle.titre }}</p>
-					</a>
+				<a class="titre-article" href="{{ path('app_article_show', {'slug': dernierArticle.slug}) }}">
+					<p>{{ dernierArticle.titre }}</p>
+				</a>
 			{% else %}
 				<p>Pas d'articles</p>
 			{% endfor %}
 		</div>
+		{# Dernières vidéos Youtube #}
+		{% include "components/youtubeVideos.html.twig" %}
 	</div>
 {% endblock %}
