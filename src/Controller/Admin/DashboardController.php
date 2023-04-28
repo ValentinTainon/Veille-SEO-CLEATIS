@@ -29,18 +29,29 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()->setTitle('Veille Seo Cleatis');
+        $username = $this->getUser()->getUsername();
+
+        return Dashboard::new()->setFaviconPath("images/favicon.png")->setTitle('Veille Seo Cleatis - ' . $username);
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoRoute('Retour sur le site', 'fas fa-home', 'app_homepage');
+        $userId = $this->getUser()->getId();
+
+        yield MenuItem::linkToUrl('Retour sur le site', 'fas fa-home', '/');
+
+        if ($this->isGranted('ROLE_REDACTEUR') && $this->getUser()->isTotpAuthenticationEnabled()){
+            yield MenuItem::linkToRoute('Afficher mon QR Code', 'fa-sharp fa-solid fa-qrcode', 'qr_code_totp')
+            ->setPermission('ROLE_REDACTEUR');
+        }
 
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class)->setPermission('ROLE_ADMIN');
             yield MenuItem::linkToCrud('Flux RSS', 'fas fa-rss', FluxRss::class)->setPermission('ROLE_ADMIN');
-        }
-        if ($this->isGranted('ROLE_REDACTEUR'))
+            yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class)->setPermission('ROLE_ADMIN');
+        } else if ($this->isGranted('ROLE_REDACTEUR')){
+            yield MenuItem::linkToCrud('Utilisateur', 'fas fa-user', User::class)->setEntityId($userId)->setPermission('ROLE_REDACTEUR');
             yield MenuItem::linkToCrud('Articles', 'fas fa-newspaper', Article::class)->setPermission('ROLE_REDACTEUR');
+        }
     }
 }

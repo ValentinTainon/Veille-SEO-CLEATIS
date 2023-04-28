@@ -3,10 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Entity\FluxRss;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class FluxRssCrudController extends AbstractCrudController
 {
@@ -15,22 +16,22 @@ class FluxRssCrudController extends AbstractCrudController
         return FluxRss::class;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud->setPageTitle('index', 'Gestion des flux RSS');
+    }
+
     public function configureActions(Actions $actions): Actions
     {
-        return $actions
-            // use the 'setPermission()' method to set the permission of actions
-            // (the same permission is granted to the action on all pages)
-            // you can set permissions for built-in actions in the same way
-            ->setPermission(Action::INDEX, 'ROLE_ADMIN')
-            ->setPermission(Action::NEW, 'ROLE_ADMIN')
-            ->setPermission(Action::EDIT, 'ROLE_ADMIN')
-            ->setPermission(Action::DELETE, 'ROLE_ADMIN');
+        if ($this->isGranted('ROLE_ADMIN')){
+            return $actions->setPermissions([Action::INDEX, Action::NEW, Action::EDIT, Action::DELETE])
+            ->update(Crud::PAGE_INDEX, Action::NEW, fn (Action $action) => $action->setLabel('Créer un flux RSS'))
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, fn (Action $action) => $action->setLabel('Créer et ajouter un nouveau flux RSS'));
+        }
     }
 
     public function configureFields(string $pageName): iterable
     {
-        return [
-            TextField::new('lienRss'),
-        ];
+        return [TextField::new('lienRss')];
     }
 }

@@ -38,7 +38,17 @@ class ArticleRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    
+
+    public function findBySearch($query)
+    {
+        return $this->createQueryBuilder('a')
+        ->where('a.titre LIKE :query OR a.description LIKE :query')
+        ->orderBy('a.datePublication', 'DESC')
+        ->setParameter('query', $query)
+        ->getQuery()
+        ->getResult();
+    }
+
     public function articlePrecedentQuery(Article $article)
     {
         return $this->createQueryBuilder('a')

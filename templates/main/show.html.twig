@@ -5,13 +5,16 @@
 {% block body %}
 	<div class="detail-article-container">
 		<div class="detail-article-content">
+			{% include "components/search_bar.html.twig" %}
 			<span>
 				<a href="/#fil-actualites">Fil d'actualités / </a><a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }} / </a><a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a>
 			</span>
 			<p class="date-article">Publié le {{ article.datePublication|date('d/m/Y à H:i:s') }}</p>
 			<h2>{{ article.titre }}</h2>
 			{{ article.description|split('</figure>')|first|u.truncate(5000, '...', false)|raw }}
-			<p>Lire l'article complet : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
+			{% if article.lienArticle is not null %}
+				<p>Lire l'article complet : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
+			{% endif %}
 			<div class="nav-article">
 				{% if articleSuivant is not null %}
 					<a href="{{ path('app_article_show', { 'slug': articleSuivant.slug }) }}"><i class="fa-solid fa-arrow-left"></i> Article suivant</a>
@@ -33,6 +36,6 @@
 			{% endfor %}
 		</div>
 		{# Dernières vidéos Youtube #}
-		{% include "components/youtubeVideos.html.twig" %}
+		{% include "components/youtube_videos.html.twig" %}
 	</div>
 {% endblock %}

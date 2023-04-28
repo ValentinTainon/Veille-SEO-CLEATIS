@@ -36,11 +36,14 @@ class Article
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $lienArticle = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    private ?FluxRss $fluxRss = null;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -145,6 +148,18 @@ class Article
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getFluxRss(): ?FluxRss
+    {
+        return $this->fluxRss;
+    }
+
+    public function setFluxRss(?FluxRss $fluxRss): self
+    {
+        $this->fluxRss = $fluxRss;
 
         return $this;
     }

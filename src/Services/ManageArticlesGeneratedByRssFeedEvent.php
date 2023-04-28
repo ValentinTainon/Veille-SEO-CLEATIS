@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
+use DateTime;
 use App\Entity\Article;
+use Cocur\Slugify\Slugify;
 use App\Repository\ArticleRepository;
 use App\Repository\FluxRssRepository;
 
-class ManageArticlesBdd
+class ManageArticlesGeneratedByRssFeedEvent
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
-    public function ManageArticles(ArticleRepository $articleRepository, FluxRssRepository $fluxRssRepository): void
+    public function manageArticlesGeneratedByRssFeed(ArticleRepository $articleRepository, FluxRssRepository $fluxRssRepository): void
     {
         // Récupérations de tout les articles présent dans la BDD ainsi que de leur titre.
         $articles = $articleRepository->findAll();
@@ -24,7 +24,7 @@ class ManageArticlesBdd
         // Récupération de tous les liens RSS présent dans la BDD.
         $liensRss = $fluxRssRepository->findAll();
 
-        // Initialisation d'un tableau regroupant les titres d'articles présent dans les liensRSS.
+        // Initialisation d'un tableau regroupant les titres d'articles présent dans les Flux RSS.
         $titresExistantsRss = [];
 
         // La première boucle foreach charge chaque lien RSS et regroupe les articles (items) qu'il contient dans un tableau.
@@ -45,12 +45,14 @@ class ManageArticlesBdd
                 // Si l'article n'existe pas, création d'un nouvel article, et l'enregistrer dans la base de données.
                 $nouvelArticle = new Article();
                 $channel = $fluxRss->channel;
-                $datePublication = (new \DateTime($item->pubDate));
+                $fluxRssId = $fluxRssRepository->findOneBy(['id' => $lienRss->getId()]);
+                $datePublication = (new DateTime($item->pubDate));
                 $nomSource = $channel->title;
                 $lienSource = $channel->link;
                 $lienArticle = $item->link;
 
-                $nouvelArticle->setDatePublication($datePublication)
+                $nouvelArticle->setFluxRss($fluxRssId)
+                    ->setDatePublication($datePublication)
                     ->setNomSource($nomSource)
                     ->setLienSource($lienSource)
                     ->setTitre($titre)
@@ -66,7 +68,7 @@ class ManageArticlesBdd
                     if (array_key_exists(0, $matches)) {
                         $description = $matches[0];
                         if ($description === $titre)
-                            $description = '';
+                            $description = null;
                         
                         $nouvelArticle->setDescription($description);
                     }

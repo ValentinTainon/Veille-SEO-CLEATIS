@@ -52,6 +52,7 @@
 			<div class="fil-actu-container">
 				<div class="fil-actu-content">
 					<h2>Fil D'actualités</h2>
+					{% include "components/search_bar.html.twig" %}
 					{% for article in articles %}
 						<div class="article">
 							<p class="date-article">Le {{ article.datePublication|date('d/m/Y à H:i:s') }}</p>
@@ -68,6 +69,6 @@
 			</div>
 		</section>
 		{# Dernières vidéos Youtube #}
-        {% include "components/youtubeVideos.html.twig" %}
+        {% include "components/youtube_videos.html.twig" %}
 	</div>
 {% endblock %}

@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Services\ManageYoutubeVideosBdd;
 use App\Repository\YoutubeVideoRepository;
+use App\Services\ManageYoutubeVideosEvent;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'manage-youtube-videos', description: 'Gérer les vidéos Youtube depuis l\'API Youtube')]
 class ManageYoutubeVideosCommand extends Command
 {
-    public function __construct(private ManageYoutubeVideosBdd $manageYoutubeVideosBdd, private YoutubeVideoRepository $youtubeVideoRepository)
+    public function __construct(private ManageYoutubeVideosEvent $manageYoutubeVideosEvent, private YoutubeVideoRepository $youtubeVideoRepository)
     {
         parent::__construct();
     }
@@ -29,7 +29,7 @@ class ManageYoutubeVideosCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->manageYoutubeVideosBdd->ManageYoutubeVideos($this->youtubeVideoRepository);
+        $this->manageYoutubeVideosEvent->ManageYoutubeVideos($this->youtubeVideoRepository);
 
         $output->writeln('Command executed successfully.');
 

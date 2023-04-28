@@ -8,11 +8,9 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ManageYoutubeVideosBdd
+class ManageYoutubeVideosEvent
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     public function ManageYoutubeVideos(YoutubeVideoRepository $youtubeVideoRepository): void
     {
