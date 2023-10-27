@@ -1,41 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ article.titre }}{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
 	<div class="detail-article-container">
-		<div class="detail-article-content">
-			{% include "components/search_bar.html.twig" %}
-			<span>
-				<a href="/#fil-actualites">Fil d'actualités / </a><a href="{{ article.lienSource }}" target="_blank">{{ article.nomSource }} / </a><a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a>
-			</span>
-			<p class="date-article">Publié le {{ article.datePublication|date('d/m/Y à H:i:s') }}</p>
-			<h2>{{ article.titre }}</h2>
-			{{ article.description|split('</figure>')|first|u.truncate(5000, '...', false)|raw }}
-			{% if article.lienArticle is not null %}
-				<p>Lire l'article complet : <a href="{{ article.lienArticle }}" target="_blank">{{ article.titre }}</a></p>
-			{% endif %}
-			<div class="nav-article">
-				{% if articleSuivant is not null %}
-					<a href="{{ path('app_article_show', { 'slug': articleSuivant.slug }) }}"><i class="fa-solid fa-arrow-left"></i> Article suivant</a>
-				{% endif %}
-				{% if articlePrecedent is not null %}
-					<a href="{{ path('app_article_show', { 'slug': articlePrecedent.slug }) }}">Article précédent <i class="fa-solid fa-arrow-right"></i></a>
-				{% endif %}
-			</div>
-		</div>
-		{# Derniers articles #}
-		<div class="derniers-articles">
-			<h2>Derniers Articles</h2>
-			{% for dernierArticle in derniersArticles %}
-				<a class="titre-article" href="{{ path('app_article_show', {'slug': dernierArticle.slug}) }}">
-					<p>{{ dernierArticle.titre }}</p>
-				</a>
-			{% else %}
-				<p>Pas d'articles</p>
-			{% endfor %}
-		</div>
+		{# Footer #}
+		{% include "components/footer.html.twig" %}
 		{# Dernières vidéos Youtube #}
 		{% include "components/youtube_videos.html.twig" %}
+		<div class="detail-article-content">
+			<div class="right-content">
+				{# Search-Bar #}
+				{% include "components/search_bar.html.twig" %}
+				{# Derniers articles #}
+				<div class="derniers-articles">
+					<h2>Derniers Articles</h2>
+					{% for dernierArticle in derniersArticles %}
+						<a href="{{ path('app_article_show', {'slug': dernierArticle.slug}) }}">{{ dernierArticle.title }}</a>
+					{% else %}
+						<p class="vide">Pas d'articles</p>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="left-content">
+				<div class="end-left-content">
+					{% if article.articleLink is not null %}
+						<p class="lien-article-complet">Lire l'article complet : <a href="{{ article.articleLink }}" target="_blank">{{ article.title }}</a></p>
+					{% endif %}
+					<div class="nav-articles">
+						<div>
+							{% if nextArticle is not null %}
+								<a href="{{ path('app_article_show', { 'slug': nextArticle.slug }) }}"><i class="fa-solid fa-arrow-left"></i> Article suivant</a>
+							{% endif %}
+						</div>
+						<div>
+							{% if previousArticle is not null %}
+								<a href="{{ path('app_article_show', { 'slug': previousArticle.slug }) }}">Article précédent <i class="fa-solid fa-arrow-right"></i></a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<div class="start-left-content">
+					<span class="breadcrumb">
+						<a href="/#fil-actualites">Fil d'actualités</a> / <a href="{{ article.articleLink }}" target="_blank">{{ article.title }}</a>
+					</span>
+					<p class="date">Publié le {{ article.publicationDate|date('d/m/Y à H:i:s') }} par <a href="{{ article.sourceLink }}" target="_blank">{{ article.source }}</a></p>
+					{% if article.source is not same as('Noiise') %}
+						<h2>{{ article.title }}</h2>
+					{% endif %}
+					<div class="article-description">
+						{{ article.description|u.truncate(5000, '...', false)|raw}}
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 {% endblock %}
+
+{% block footer %}{% endblock %}

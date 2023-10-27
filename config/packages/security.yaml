@@ -35,7 +35,7 @@ security:
                 default_target_path: admin
             logout:
                 path: app_logout
-                target: app_login
+                target: app_homepage
             two_factor:
                 auth_form_path: 2fa_login
                 check_path: 2fa_login_check
@@ -50,7 +50,7 @@ security:
     access_control:
         - { path: ^/logout, role: PUBLIC_ACCESS }
         - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
-        - { path: ^/admin, allow_if: "(is_granted('ROLE_ADMIN') or is_granted('ROLE_REDACTEUR')) and user.isVerified() == true" }
+        - { path: ^/admin, allow_if: "(is_granted('ROLE_ADMIN') or is_granted('ROLE_REDACTEUR')) and user.isVerified() === true" }
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_REDACTEUR # Un administrateur sera également rédacteur

@@ -11,10 +11,11 @@ class SearchFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('query', TextType::class, [
-            'label' => false,
-            'attr' => ['placeholder' => 'Rechercher un article via un mot clé...'],
-            'required' => false
+        $builder
+            ->add('query', TextType::class, [
+                'label' => false,
+                'attr' => ['placeholder' => 'Rechercher un article via un mot clé...'],
+                'required' => false,
         ]);
     }
 
@@ -22,7 +23,7 @@ class SearchFormType extends AbstractType
     {
         $resolver->setDefaults([
             'method' => 'GET',
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
     }
 }

@@ -3,22 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\ChangePasswordFormType;
-use App\Form\ResetPasswordRequestFormType;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
+use App\Form\ResetPasswordFormType;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Form\ResetPasswordRequestFormType;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
-use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
@@ -102,7 +102,7 @@ class ResetPasswordController extends AbstractController
         }
 
         // The token is valid; allow the user to change their password.
-        $form = $this->createForm(ChangePasswordFormType::class);
+        $form = $this->createForm(ResetPasswordFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -118,7 +118,7 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            $this->addFlash('Succès', 'Votre mot de passe a été réinitialisé !');
+            $this->addFlash('Succès', ' Votre mot de passe a été réinitialisé !');
 
             return $this->redirectToRoute('app_login');
         }
@@ -156,14 +156,11 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = (new TemplatedEmail())
-            ->from(new Address('contact@veille-seo.cleatis.fr', 'Cleatis'))
+            ->from(new Address('contact@cleatis.fr', 'Cleatis'))
             ->to($user->getEmail())
-            ->subject('Cleatis - Votre demande de réinitialisation de mot de passe')
+            ->subject('Veille SEO Cleatis - Votre demande de réinitialisation de mot de passe')
             ->htmlTemplate('reset_password/email.html.twig')
-            ->context([
-                'resetToken' => $resetToken,
-            ])
-        ;
+            ->context(['resetToken' => $resetToken]);
 
         $mailer->send($email);
 

@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\FluxRss;
+use App\Entity\RssFeed;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<FluxRss>
+ * @extends ServiceEntityRepository<RssFeed>
  *
- * @method FluxRss|null find($id, $lockMode = null, $lockVersion = null)
- * @method FluxRss|null findOneBy(array $criteria, array $orderBy = null)
- * @method FluxRss[]    findAll()
- * @method FluxRss[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RssFeed|null find($id, $lockMode = null, $lockVersion = null)
+ * @method RssFeed|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RssFeed[]    findAll()
+ * @method RssFeed[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FluxRssRepository extends ServiceEntityRepository
+class RssFeedRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, FluxRss::class);
+        parent::__construct($registry, RssFeed::class);
     }
 
-    public function save(FluxRss $entity, bool $flush = false): void
+    public function save(RssFeed $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class FluxRssRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(FluxRss $entity, bool $flush = false): void
+    public function remove(RssFeed $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class FluxRssRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return FluxRss[] Returns an array of FluxRss objects
+//     * @return RssFeed[] Returns an array of RssFeed objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class FluxRssRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?FluxRss
+//    public function findOneBySomeField($value): ?RssFeed
 //    {
 //        return $this->createQueryBuilder('f')
 //            ->andWhere('f.exampleField = :val')

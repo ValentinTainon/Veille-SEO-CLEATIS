@@ -26,11 +26,11 @@ class MainController extends AbstractController
         }
 
         /* SEARCH */
-        $form = $this->createForm(SearchFormType::class);
-        $form->handleRequest($request);
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
         
-        if($form->isSubmitted() && $form->isValid()){
-            $query = $form->get('query')->getData();
+        if($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $query = $searchForm->get('query')->getData();
             
             /* PAGINATION DES ARTICLES RECHERCHE */
             $articles = $paginator->paginate(
@@ -40,7 +40,7 @@ class MainController extends AbstractController
             );
 
             return $this->render('main/homepage.html.twig', [
-                'form' => $form,
+                'searchForm' => $searchForm,
                 'articles' => $articles,
                 'iframes' => $iframes,
             ]);
@@ -48,13 +48,13 @@ class MainController extends AbstractController
 
         /* PAGINATION DE TOUT LES ARTICLES */
         $articles = $paginator->paginate(
-            $articleRepository->findBy([], ['datePublication' => 'desc']),
+            $articleRepository->findBy([], ['publicationDate' => 'desc']),
             $request->query->get('page', 1), /* Numéro de page */
             10 /* Limite par page */
         );
 
         return $this->render('main/homepage.html.twig', [
-            'form' => $form,
+            'searchForm' => $searchForm,
             'articles' => $articles,
             'iframes' => $iframes,
         ]);
@@ -72,11 +72,11 @@ class MainController extends AbstractController
         }
         
         /* SEARCH */
-        $form = $this->createForm(SearchFormType::class);
-        $form->handleRequest($request);
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
         
-        if($form->isSubmitted() && $form->isValid()){
-            $query = $form->get('query')->getData();
+        if($searchForm->isSubmitted() && $searchForm->isValid()){
+            $query = $searchForm->get('query')->getData();
             
             /* PAGINATION DES ARTICLES RECHERCHE */
             $articles = $paginator->paginate(
@@ -86,24 +86,24 @@ class MainController extends AbstractController
             );
 
             return $this->render('main/homepage.html.twig', [
-                'form' => $form,
+                'searchForm' => $searchForm,
                 'articles' => $articles,
                 'iframes' => $iframes,
             ]);
         }
         
         /* NAVIGATION DES ARTICLES PRECEDENT/SUIVANT */
-        $articlePrecedent = $articleRepository->articlePrecedentQuery($article);
-        $articleSuivant = $articleRepository->articleSuivantQuery($article);
+        $previousArticle = $articleRepository->previousArticleQuery($article);
+        $nextArticle = $articleRepository->nextArticleQuery($article);
         
         /* LES 10 DERNIERS ARTICLES */
-        $derniersArticles = $articleRepository->findBy([], ['datePublication' => 'DESC'], 10);
+        $derniersArticles = $articleRepository->findBy([], ['publicationDate' => 'DESC'], 10);
         
         return $this->render('main/show.html.twig', [
-            'form' => $form,
+            'searchForm' => $searchForm,
             'article' => $article,
-            'articlePrecedent' => $articlePrecedent,
-            'articleSuivant' => $articleSuivant,
+            'previousArticle' => $previousArticle,
+            'nextArticle' => $nextArticle,
             'derniersArticles' => $derniersArticles,
             'iframes' => $iframes,
         ]);

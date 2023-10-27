@@ -12,4 +12,4 @@ scheb_two_factor:
         #                                # From v11: Acceptable time drift in seconds
         # parameters:                    # Additional parameters added in the QR code
         #     image: 'https://my-service/img/logo.png'
-        # template: security/2fa_form.html.twig   # Template used to render the authentication form
+        template: security/2fa_form.html.twig   # Template used to render the authentication form

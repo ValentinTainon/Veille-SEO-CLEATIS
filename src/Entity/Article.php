@@ -6,8 +6,11 @@ use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ArticleRepository;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity('slug', message: 'Ce slug existe déjà.')]
@@ -18,17 +21,25 @@ class Article
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(onDelete:"SET NULL")]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(onDelete:"SET NULL")]
+    private ?RssFeed $rssFeed = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datePublication = null;
+    private ?\DateTimeInterface $publicationDate = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nomSource = null;
+    private ?string $source = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lienSource = null;
+    private ?string $sourceLink = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $titre = null;
+    private ?string $title = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
@@ -37,18 +48,24 @@ class Article
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $lienArticle = null;
+    private ?string $articleLink = null;
 
-    #[ORM\ManyToOne(inversedBy: 'articles')]
-    private ?User $user = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageName = null;
+    
+    #[Vich\UploadableField(mapping: 'uploads', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+    
+    #[ORM\Column(length: 100)]
+    private ?string $imageAlt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'articles')]
-    private ?FluxRss $fluxRss = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\PrePersist]
     public function prePersist()
     {
-        $this->slug = (new Slugify())->slugify($this->titre);
+        $this->slug = (new Slugify())->slugify($this->title);
     }
 
     public function getId(): ?int
@@ -56,50 +73,74 @@ class Article
         return $this->id;
     }
 
-    public function getDatePublication(): ?\DateTimeInterface
+    public function getUser(): ?User
     {
-        return $this->datePublication;
+        return $this->user;
     }
 
-    public function setDatePublication(\DateTimeInterface $datePublication): self
+    public function setUser(?User $user): self
     {
-        $this->datePublication = $datePublication;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getNomSource(): ?string
+    public function getRssFeed(): ?RssFeed
     {
-        return $this->nomSource;
+        return $this->rssFeed;
     }
 
-    public function setNomSource(string $nomSource): self
+    public function setRssFeed(?RssFeed $rssFeed): self
     {
-        $this->nomSource = $nomSource;
+        $this->rssFeed = $rssFeed;
 
         return $this;
     }
 
-    public function getLienSource(): ?string
+    public function getPublicationDate(): ?\DateTimeInterface
     {
-        return $this->lienSource;
+        return $this->publicationDate;
     }
 
-    public function setLienSource(string $lienSource): self
+    public function setPublicationDate(\DateTimeInterface $publicationDate): self
     {
-        $this->lienSource = $lienSource;
+        $this->publicationDate = $publicationDate;
 
         return $this;
     }
 
-    public function getTitre(): ?string
+    public function getSource(): ?string
     {
-        return $this->titre;
+        return $this->source;
     }
 
-    public function setTitre(string $titre): self
+    public function setSource(string $source): self
     {
-        $this->titre = $titre;
+        $this->source = $source;
+
+        return $this;
+    }
+
+    public function getSourceLink(): ?string
+    {
+        return $this->sourceLink;
+    }
+
+    public function setSourceLink(string $sourceLink): self
+    {
+        $this->sourceLink = $sourceLink;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
 
         return $this;
     }
@@ -128,38 +169,64 @@ class Article
         return $this;
     }
 
-    public function getLienArticle(): ?string
+    public function getArticleLink(): ?string
     {
-        return $this->lienArticle;
+        return $this->articleLink;
     }
 
-    public function setLienArticle(string $lienArticle): self
+    public function setArticleLink(string $articleLink): self
     {
-        $this->lienArticle = $lienArticle;
+        $this->articleLink = $articleLink;
+
+        return $this;
+    }
+    
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+    
+    public function setImageName(?string $imageName): static
+    {
+        $this->imageName = $imageName;
+        
+        return $this;
+    }
+    
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+    
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+        
+        if (null !== $imageFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageAlt(): ?string
+    {
+        return $this->imageAlt;
+    }
+
+    public function setImageAlt(string $imageAlt): self
+    {
+        $this->imageAlt = $imageAlt;
 
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->user;
+        return $this->updatedAt;
     }
 
-    public function setUser(?User $user): self
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getFluxRss(): ?FluxRss
-    {
-        return $this->fluxRss;
-    }
-
-    public function setFluxRss(?FluxRss $fluxRss): self
-    {
-        $this->fluxRss = $fluxRss;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

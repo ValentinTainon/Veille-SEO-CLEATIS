@@ -1,8 +1,18 @@
-<p class="label"><label for="_auth_code">Code d'authentification :</label></p>
+{% extends 'base.html.twig' %}
 
-<form class="form" action="/2fa_check" method="post">
-    <p class="widget"><input id="_auth_code" type="text" name="_auth_code" autocomplete="one-time-code" autofocus/></p>
-    <p class="submit"><input type="submit" value="Connexion" /></p>
-</form>
+{% block title %}Veille SEO Cleatis - Connexion{% endblock %}
 
-<p class="cancel"><a href="/logout">Annuler</a></p>
+{% block menu %}{% endblock %}
+
+{% block body %}
+    <div class="form-2fa-container">
+        <form class="form-2fa" action="/2fa_check" method="post">
+            <label for="_auth_code">Code double authentification :</label>
+            <input id="_auth_code" class="form-control-2fa" type="password" name="_auth_code" autocomplete="one-time-code" autofocus/>
+            <button class="submit" type="submit">Connexion</button>
+            <p class="cancel"><a href="/logout">Annuler</a></p>
+        </form>
+    </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -1,3 +1,17 @@
-<p>Veuillez télécharger une application d'authentification comme Google Authenticator et scanner votre code QR</p>
+{% extends 'base.html.twig' %}
 
-<img id="qr-code" src="data:image/png;base64,{{ qrCode }}" alt="QR code" name="qr-code">
+{% block title %}Votre QR Code{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block body %}
+    <div class="qr-code-container">
+        <div class="qr-code-content">
+            <h2>Veuillez télécharger une application d'authentification comme Google Authenticator et scanner votre code QR</h2>
+            <img id="qr-code" src="data:image/png;base64,{{ qrCode }}" alt="QR code" name="qr-code">
+            <a href="{{path('admin')}}">Retour</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

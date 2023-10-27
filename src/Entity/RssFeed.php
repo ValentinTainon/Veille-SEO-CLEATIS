@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\FluxRssRepository;
+use App\Repository\RssFeedRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: FluxRssRepository::class)]
-class FluxRss
+#[ORM\Entity(repositoryClass: RssFeedRepository::class)]
+class RssFeed
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,9 +16,9 @@ class FluxRss
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lienRss = null;
+    private ?string $xmlLink = null;
 
-    #[ORM\OneToMany(mappedBy: 'fluxRss', targetEntity: Article::class)]
+    #[ORM\OneToMany(mappedBy: 'rssFeed', targetEntity: Article::class)]
     private Collection $articles;
 
     public function __construct()
@@ -28,7 +28,7 @@ class FluxRss
 
     public function __toString(): string
     {
-        return $this->lienRss;
+        return $this->xmlLink;
     }
 
     public function getId(): ?int
@@ -36,14 +36,14 @@ class FluxRss
         return $this->id;
     }
 
-    public function getLienRss(): ?string
+    public function getXmlLink(): ?string
     {
-        return $this->lienRss;
+        return $this->xmlLink;
     }
 
-    public function setLienRss(string $lienRss): self
+    public function setXmlLink(string $xmlLink): self
     {
-        $this->lienRss = $lienRss;
+        $this->xmlLink = $xmlLink;
 
         return $this;
     }
@@ -60,7 +60,7 @@ class FluxRss
     {
         if (!$this->articles->contains($article)) {
             $this->articles->add($article);
-            $article->setFluxRss($this);
+            $article->setRssFeed($this);
         }
 
         return $this;
@@ -70,8 +70,8 @@ class FluxRss
     {
         if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
-            if ($article->getFluxRss() === $this) {
-                $article->setFluxRss(null);
+            if ($article->getRssFeed() === $this) {
+                $article->setRssFeed(null);
             }
         }
 

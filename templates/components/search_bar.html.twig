@@ -1,4 +1,4 @@
-{{ form_start(form, { 'attr' : { 'class': 'search-bar-container' } }) }}
-    {{ form_row(form.query) }}
+{{ form_start(searchForm, { 'attr' : { 'class': 'search-bar' } }) }}
+    {{ form_row(searchForm.query, { 'attr' : { 'class': 'search-input' } }) }}
     <button class="search-submit-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-{{ form_end(form) }}
+{{ form_end(searchForm) }}

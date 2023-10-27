@@ -51,7 +51,7 @@ class ManageYoutubeVideosEvent
             $video = $data['items'][$i];
             $iframes[$i] = sprintf('<iframe loading="lazy" src="https://www.youtube.com/embed/%s" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>', $video['id']['videoId']);
             
-            // Vérification si la vidéo Youtube existe déjà dans la base de données, si c'est le cas on passe directement au prochain tour de boucle.
+            // Vérifier si la vidéo Youtube existe déjà dans la base de données, si c'est le cas on passe directement au prochain tour de boucle.
             if (in_array($iframes[$i], $iframesExistantsBdd))
             continue;
         

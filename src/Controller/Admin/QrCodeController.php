@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;

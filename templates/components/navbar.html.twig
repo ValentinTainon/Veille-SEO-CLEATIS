@@ -1,9 +1,42 @@
 <!DOCTYPE html>
 <nav>
-    <a href="{{path('app_homepage')}}"><img class="logo" src="{{ asset('images/logo-veille-seo.png') }}" alt="Logo Cléatis"></a>
-    <a class="nav-lien" href="/#fil-actualites">Fil d'actualités</a>
+    <a class="logo-veille-seo" href="{{path('app_homepage')}}"><img class="logo" src="{{ asset('images/logo-veille-seo.png') }}" alt="Logo Veille SEO"></a>
+	<a class="nav-lien" href="/#fil-actualites">Fil d'actualités</a>
     <a class="nav-lien" href="https://www.cleatis.eu/audit-seo/" target="_blank">Demander un audit SEO</a>
-    <a class="nav-lien" href="#evenement">Événements</a>
+    <a class="nav-lien" href="/#evenements">Événements</a>
     <a class="nav-lien" href="https://www.cleatis.eu/livres-blancs/" target="_blank">Livre blanc</a>
     <a class="nav-lien" href="{{path('app_auteurs')}}">Auteurs</a>
+</nav>
+
+<nav role="navigation" class="menu-burger">
+	<a href="{{path('app_homepage')}}"><img class="logo" src="{{ asset('images/logo-veille-seo.png') }}" alt="Logo Veille SEO"></a>
+	<div id="menuToggle">
+		<!--
+		    A fake / hidden checkbox is used as click reciever,
+		    so you can use the :checked selector on it.
+		    -->
+		<input type="checkbox"/>
+
+		<!--
+		    Some spans to act as a hamburger.
+		    
+		    They are acting like a real hamburger,
+		    not that McDonalds stuff.
+		    -->
+		<span></span>
+		<span></span>
+		<span></span>
+
+		<!--
+		    Too bad the menu has to be inside of the button
+		    but hey, it's pure CSS magic.
+		    -->
+		<ul id="menu">
+            <a class="nav-lien" href="/#fil-actualites">Fil d'actualités</a>
+            <a class="nav-lien" href="https://www.cleatis.eu/audit-seo/" target="_blank">Demander un audit SEO</a>
+            <a class="nav-lien" href="/#evenements">Événements</a>
+            <a class="nav-lien" href="https://www.cleatis.eu/livres-blancs/" target="_blank">Livre blanc</a>
+            <a class="nav-lien" href="{{path('app_auteurs')}}">Auteurs</a>
+		</ul>
+	</div>
 </nav>

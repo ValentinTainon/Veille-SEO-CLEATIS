@@ -42,30 +42,30 @@ class ArticleRepository extends ServiceEntityRepository
     public function findBySearch($query)
     {
         return $this->createQueryBuilder('a')
-        ->where('a.titre LIKE :query OR a.description LIKE :query')
-        ->orderBy('a.datePublication', 'DESC')
-        ->setParameter('query', $query)
+        ->where('a.title LIKE :query')
+        ->orderBy('a.publicationDate', 'DESC')
+        ->setParameter('query', '%'.$query.'%')
         ->getQuery()
         ->getResult();
     }
 
-    public function articlePrecedentQuery(Article $article)
+    public function previousArticleQuery(Article $article)
     {
         return $this->createQueryBuilder('a')
-        ->where('a.datePublication < :datePublication')
-        ->orderBy('a.datePublication', 'DESC')
-        ->setParameter('datePublication', $article->getDatePublication())
+        ->where('a.publicationDate < :publicationDate')
+        ->orderBy('a.publicationDate', 'DESC')
+        ->setParameter('publicationDate', $article->getPublicationDate())
         ->setMaxResults(1)
         ->getQuery()
         ->getOneOrNullResult();
     }
 
-    public function articleSuivantQuery(Article $article)
+    public function nextArticleQuery(Article $article)
     {
         return $this->createQueryBuilder('a')
-        ->where('a.datePublication > :datePublication')
-        ->orderBy('a.datePublication', 'ASC')
-        ->setParameter('datePublication', $article->getDatePublication())
+        ->where('a.publicationDate > :publicationDate')
+        ->orderBy('a.publicationDate', 'ASC')
+        ->setParameter('publicationDate', $article->getPublicationDate())
         ->setMaxResults(1)
         ->getQuery()
         ->getOneOrNullResult();

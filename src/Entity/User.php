@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'Il existe déjà un compte avec ce nom d\'utilisateur')]
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet e-mail')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
     #[ORM\Id]
@@ -28,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column]
     private array $roles = [];
     
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique: true)]
     private ?string $email = null;
 
     /**
@@ -36,16 +37,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     #[ORM\Column]
     private ?string $password = null;
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $totpSecret;
-
+    
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
-
+    
     #[ORM\Column(type: 'boolean')]
     private $isEnable2fa = false;
-
+    
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $totpSecret;
+    
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Article::class)]
     private Collection $articles;
 

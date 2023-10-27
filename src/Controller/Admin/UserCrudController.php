@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use App\Security\EmailVerifier;
-use App\Repository\UserRepository;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -16,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use Symfony\Component\Validator\Constraints\Regex;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use Symfony\Component\Validator\Constraints\Length;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -33,10 +33,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Totp\TotpAuthenticatorInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class UserCrudController extends AbstractCrudController
 {
-    public function __construct(private TotpAuthenticatorInterface $totpAuthenticatorInterface, private UserRepository $userRepository, private AuthorizationCheckerInterface $authorizationChecker, private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $userPasswordHasher, private EmailVerifier $emailVerifier)
+    public function __construct(private TotpAuthenticatorInterface $totpAuthenticatorInterface, private AuthorizationCheckerInterface $authorizationChecker, private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $userPasswordHasher, private EmailVerifier $emailVerifier)
     {}
 
     public static function getEntityFqcn(): string
@@ -46,82 +47,71 @@ class UserCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        if ($this->isGranted('ROLE_ADMIN'))
-            $crud->setPageTitle('index', 'Gestion des utilisateurs');
-        else if ($this->isGranted('ROLE_REDACTEUR'))
-            $crud->setPageTitle('index', 'Gestion de votre profil')->showEntityActionsInlined();
-
-        return $crud->setEntityLabelInPlural('utilisateurs')->setEntityLabelInSingular('utilisateur');
+        return $crud->setPageTitle(Crud::PAGE_INDEX, 'Gestion des utilisateurs')
+                    ->setPageTitle(Crud::PAGE_NEW, 'Créer un utilisateur')
+                    ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l\'utilisateur');
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-
-        if (!$this->isGranted('ROLE_ADMIN') && $this->isGranted('ROLE_REDACTEUR')) {
-            $userId = $this->getUser()->getId();
-            $queryBuilder->where('entity.id = :userId')->setParameter('userId', $userId)->setMaxResults(1);
-        }
-        return $queryBuilder;
+        return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
+            ->where('entity.id != :userId')->setParameter('userId', $this->getUser()->getId());
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $actions->setPermissions([Action::INDEX, Action::NEW, Action::EDIT, Action::DELETE])
-            ->update(Crud::PAGE_INDEX, Action::NEW, fn (Action $action) => $action->setLabel('Créer un utilisateur'))
-            ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, fn (Action $action) => $action->setLabel('Créer et ajouter un nouvel utilisateur'));
-        } else if ($this->isGranted('ROLE_REDACTEUR')) {
-            $actions->setPermissions([Action::INDEX, Action::EDIT])->disable(Action::NEW)->disable(Action::DELETE);
-        }
-        return $actions;
+        return $actions->update(Crud::PAGE_INDEX, Action::NEW, fn (Action $action) => $action->setLabel('Créer un utilisateur'))
+                    ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, fn (Action $action) => $action->setLabel('Créer et ajouter un nouvel utilisateur'));
     }
 
     public function configureFields(string $pageName): iterable
-    {    
-        $username = TextField::new('username')->setLabel('Nom d\'utilisateur');        
-        $isVerifiedField = BooleanField::new('isVerified')->setLabel('Utilisateur vérifié')->onlyOnIndex();
-        $isEnable2faField = BooleanField::new('isEnable2fa')->setLabel('Double authentification')->hideWhenCreating();
-
-        if ($pageName === Crud::PAGE_INDEX) {
-            $isVerifiedField->setDisabled();
-            $isEnable2faField->setDisabled();
-        } else if ($pageName === Crud::PAGE_EDIT) {
-            $userEdit = $this->getContext()->getEntity()->getInstance();
-            $userEdit2fa = $userEdit->isEnable2fa();
-            if ($this->getUser() !== $userEdit && !$userEdit2fa)
-                $isEnable2faField->setDisabled();
+    {
+        yield TextField::new('username', 'Nom d\'utilisateur')->setDisabled($pageName === Crud::PAGE_EDIT)->setRequired($pageName === Crud::PAGE_NEW);
+        yield ChoiceField::new('roles')
+            ->setLabel($pageName === Crud::PAGE_INDEX ? 'Rôle' : 'Rôle (Veuillez selectionner un seul rôle !)')
+            ->setChoices(['Administrateur' => 'ROLE_ADMIN', 'Rédacteur' => 'ROLE_REDACTEUR'])
+            ->allowMultipleChoices(true);
+        yield TextField::new('email')->setDisabled($pageName === Crud::PAGE_EDIT)->setRequired($pageName === Crud::PAGE_NEW);
+        yield TextField::new('password')
+            ->setFormType(RepeatedType::class)
+            ->setFormTypeOptions([
+                'type' => PasswordType::class,
+                'first_options' => ['label' => 'Mot de passe', 'hash_property_path' => 'password'],
+                'second_options' => ['label' => 'Répéter le mot de passe'],
+                'mapped' => false,
+                'constraints' => [
+                    new Length(['max' => 4096]), // max length allowed by Symfony for security reasons
+                    new Regex([
+                        'pattern' => '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&.*-]).{8,}$/',
+                        'message' => 'Votre mot de passe doit contenir au minimum 8 caractères avec au moins une lettre majuscule,
+                        une lettre minuscule, un chiffre et un caractère spécial.'
+                    ]),
+                ],
+                ])
+            ->setRequired($pageName === Crud::PAGE_NEW)
+            ->onlyWhenCreating();
+        yield BooleanField::new('isVerified', 'Utilisateur vérifié')->onlyOnIndex()->setDisabled();
+            
+        $userEdit = $this->getContext()->getEntity()->getInstance();
+        if ($pageName === Crud::PAGE_EDIT && $userEdit->isEnable2fa()) {
+            yield BooleanField::new('isEnable2fa', 'Désactiver sa double authentification (en cas d\'erreur de l\'utilisateur concerné)')->setDisabled(false);
+        } else {
+            yield BooleanField::new('isEnable2fa', 'Double authentification')->hideWhenCreating()->setDisabled();
         }
 
-        return [
-            $username,
-            ChoiceField::new('roles')
-                ->setLabel('Rôle')
-                ->setChoices(['Administrateur' => 'ROLE_ADMIN', 'Rédacteur' => 'ROLE_REDACTEUR'])
-                ->allowMultipleChoices(true)
-                ->setRequired(true),
-            TextField::new('email'),
-            TextField::new('password')
-                ->setFormType(RepeatedType::class)
-                ->setFormTypeOptions([
-                    'type' => PasswordType::class,
-                    'first_options' => ['label' => 'Mot de passe', 'hash_property_path' => 'password'],
-                    'second_options' => ['label' => 'Répéter le mot de passe'],
-                    'mapped' => false,
-                    'constraints' => [
-                        new Length([
-                            'min' => 6,
-                            'minMessage' => 'Votre mot de passe doit comporter au moins {{ limit }} caractères',
-                            // max length allowed by Symfony for security reasons
-                            'max' => 4096,
-                        ]),
-                    ],
-                ])
-                ->setRequired($pageName === Crud::PAGE_NEW)
-                ->onlyOnForms(),
-            $isVerifiedField,
-            $isEnable2faField
-        ];
+        yield TextField::new('checkPassword')
+            ->setFormType(PasswordType::class)
+            ->setFormTypeOptions([
+                'label' => 'Afin de valider les modifications, veuillez saisir votre mot de passe actuel',
+                'mapped' => false,
+                'constraints' => [
+                    new UserPassword([
+                        'message' => 'Votre mot de passe actuel ne correspond pas',
+                    ])
+                ],
+            ])
+            ->onlyWhenUpdating()
+            ->setRequired(true);
     }
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
@@ -137,17 +127,11 @@ class UserCrudController extends AbstractCrudController
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if ($entityInstance instanceof User){
-            // Activer/Désactiver la double authentification
-            if ($entityInstance->isEnable2fa() && !$entityInstance->isTotpAuthenticationEnabled()) {
-                $totpSecret = $this->totpAuthenticatorInterface->generateSecret();
-                $entityInstance->setTotpAuthenticationSecret($totpSecret);
-                $this->addFlash('success', 'Double authentification activé pour ' . $entityInstance->getUsername() . ', veuillez télécharger une application d\'authentification et scanner votre QR Code');
-            } elseif (!$entityInstance->isEnable2fa() && $entityInstance->isTotpAuthenticationEnabled()) {
+            // Désactiver la double authentification
+            if (!$entityInstance->isEnable2fa() && $entityInstance->isTotpAuthenticationEnabled()) {
                 $totpSecret = null;
                 $entityInstance->setTotpAuthenticationSecret($totpSecret);
                 $this->addFlash('success', 'Double authentification désactivé pour ' . $entityInstance->getUsername());
-            } else {
-                return;
             }
         }
         parent::updateEntity($entityManager, $entityInstance);
@@ -156,7 +140,7 @@ class UserCrudController extends AbstractCrudController
     private function sendMail(UserInterface $user): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('contact@veille-seo.cleatis.fr', 'Cleatis'))
+            ->from(new Address('contact@cleatis.fr', 'Cleatis'))
             ->to($user->getEmail())
             ->subject('Veille SEO CLEATIS - Veuillez confirmer votre e-mail')
             ->htmlTemplate('registration/confirmation_email.html.twig');
@@ -178,7 +162,7 @@ class UserCrudController extends AbstractCrudController
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
-            return $this->redirectToRoute('app_logout');
+            return $this->redirectToRoute('app_homepage');
         }
 
         $this->addFlash('success', 'Votre adresse e-mail a été vérifiée.');
